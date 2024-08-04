@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28.3)
+cmake_minimum_required(VERSION 3.22.1)
 project(LearnOpenGL VERSION 0.1.0 LANGUAGES C CXX)
 
 find_package(PkgConfig REQUIRED)
@@ -6,6 +6,10 @@ pkg_check_modules(GLFW REQUIRED glfw3)
 message(STATUS "Found GLFW3 in ${GLFW_INCLUDE_DIRS}")
 
 set(LIBS ${GLFW_LIBRARIES})
+# first create relevant static libraries requried for other projects
+add_library(STB_IMAGE "src/stb_image.cpp")
+set(LIBS ${LIBS} STB_IMAGE)
+
 add_library(GLAD "src/glad.c")
 set(LIBS ${LIBS} GLAD)
 
@@ -23,7 +27,15 @@ set(1.getting_started
     2.5.hello_triangle_exercise_003
     3.1.shade_input_output
     3.2.shade_uniform
+    4.1.textures
+    4.2.textures
+    4.3.textures
 )
+
+#configure_file(configuration/root_directory.h.in configuration/root_directory.h)
+
+configure_file(configuration/root_directory.h.in configuration/root_directory.h)
+include_directories(${CMAKE_BINARY_DIR}/configuration)
 
 function(create_project_from_sources chapter demo)
 	file(GLOB SOURCE
